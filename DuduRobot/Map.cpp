@@ -9,8 +9,8 @@
 
 Map::Map(const char* mapFile, float mapResolution, float robotSize):mapFile(mapFile) {
 	loadImage();
-
-
+	unsigned int robotInCells = robotSize/mapResolution;
+	inflateGrig(robotInCells);
 
 }
 
@@ -38,6 +38,51 @@ void Map::loadImage(){
 		}
 		cout<<"\n"<<endl;
 	}
+}
+
+void Map::inflateGrig(unsigned int robotSizeInCells){
+	cout << "Inflating map" <<endl;
+	unsigned int inflateRadius = robotSizeInCells / 2;
+	Grid inflated;
+
+	unsigned int mapWidth = map[0].size();
+	unsigned int mapHeight = map.size();
+
+	for (unsigned int i = 0 ; i < mapHeight ; i++){
+		vector<bool> row;
+
+		for (unsigned int j = 0 ; j < mapWidth ; j++){
+			bool cellValue = false;
+			for (unsigned int k = (i < inflateRadius ? 0 : i - inflateRadius) ; k < mapHeight && k < i + inflateRadius ; k++){
+				for (unsigned int l = (j < inflateRadius ? 0 : j - inflateRadius) ; l < mapWidth && l < j+inflateRadius; l++){
+					if (map[k][l]){
+						cellValue = true;
+					}
+				}
+			}
+			row.push_back(cellValue);
+		}
+		inflated.push_back(row);
+	}
+
+	for (unsigned int i = 0 ; i < mapHeight; ++i){
+		for (unsigned int j = 0 ; j < mapWidth; ++j){
+			cout << (inflated[i][j] ? "0" : " ");
+		}
+		cout<<"\n"<<endl;
+	}
+
+	// Clearing old map
+	for (unsigned int i = 0 ; i < mapHeight ; i++){
+		map[i].clear();
+	}
+	map.clear();
+
+	map = inflated;
+}
+
+void Map::createFineGrid(){
+//	unsigned int fineGridWidth = map
 }
 //void convertToGrig();
 //void inflateGrig();
