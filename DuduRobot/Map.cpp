@@ -32,14 +32,9 @@ void Map::loadImage(){
 		map.push_back(row);
 	}
 
-	for (unsigned int i = 0 ; i < mapHeight ; ++i){
+	for (unsigned int i = 0 ; i < mapHeight; ++i){
 		for (unsigned int j = 0 ; j < mapWidth; ++j){
-			cout << (map[i][j] ? "0" : "-");
-//			if (map[i][j]){
-//				cout<<"0";
-//			} else {
-//				cout << "-";
-//			}
+			cout << (map[i][j] ? "0" : " ");
 		}
 		cout<<"\n"<<endl;
 	}
