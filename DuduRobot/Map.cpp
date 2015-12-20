@@ -11,6 +11,7 @@ Map::Map(const char* mapFile, float mapResolution, float robotSize):mapFile(mapF
 	loadImage();
 	unsigned int robotInCells = robotSize/mapResolution;
 	inflateGrig(robotInCells);
+	createFineGrid(robotInCells);
 
 }
 
@@ -75,25 +76,32 @@ void Map::inflateGrig(unsigned int robotSizeInCells){
 }
 
 void Map::createFineGrid(unsigned int robotSizeInCells){
+	cout << "Creating fine grid"<<endl;
 	unsigned int fineWidth = inflated[0].size() / robotSizeInCells;
 	unsigned int fineHeight = inflated.size() / robotSizeInCells;
 
+	fineGrid.resize(fineHeight);
 	for (unsigned int i = 0 ; i < fineHeight ; i++){
-			vector<bool> row;
-
-			for (unsigned int j = 0 ; j < fineWidth ; j++){
-				bool cellValue = false;
-//				for (unsigned int k = (i < inflateRadius ? 0 : i - inflateRadius) ; k < mapHeight && k < i + inflateRadius ; k++){
-//					for (unsigned int l = (j < inflateRadius ? 0 : j - inflateRadius) ; l < mapWidth && l < j+inflateRadius; l++){
-//						if (inflated[k][l]){
-//							cellValue = true;
-//						}
-//					}
-//				}
-				row.push_back(cellValue);
-			}
-			inflated.push_back(row);
+		fineGrid[i].resize(fineWidth);
+		for (int j = 0 ; j < fineWidth ; j++){
+			fineGrid[i][j] = false;
 		}
+	}
+
+	for (unsigned int i = 0 ; i < inflated.size() ; i++){
+		for (unsigned int j = 0 ; j < inflated[i].size() ; j++){
+			if (inflated[i][j]){
+				fineGrid[i/robotSizeInCells][j/robotSizeInCells] = true;
+			}
+		}
+	}
+	// print inflated map
+	for (unsigned int i = 0 ; i < fineHeight; i++){
+		for (unsigned int j = 0 ; j < fineWidth; j++){
+			cout << (fineGrid[i][j] ? "0" : " ");
+		}
+		cout<<"\n"<<endl;
+	}
 }
 //void convertToGrig();
 //void inflateGrig();
