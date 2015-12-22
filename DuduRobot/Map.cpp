@@ -12,7 +12,7 @@ Map::Map(const char* mapFile, float mapResolution, float robotSize):mapFile(mapF
 	loadImage();
 	robotSizeInCells = robotSize/mapResolution;
 	inflateGrig();
-//	createFineGrid(robotInCells);
+	createFineGrid();
 }
 
 void Map::loadImage(){
@@ -52,12 +52,23 @@ void Map::inflateGrig(){
 	inflated.forEach(checkRadiusForInflation);
 	inflated.print();
 }
+void Map::setInFineGrid(unsigned int row, unsigned int col, bool val){
+	if (val){
+		globalmap->fineGrid.setVal(row/globalmap->robotSizeInCells, col/globalmap->robotSizeInCells, true);
+	}
+}
+void Map::createFineGrid(){
 
-void Map::createFineGrid(unsigned int robotSizeInCells){
-//	/cout << "Creating fine grid"<<endl;
-//	unsigned int fineWidth = inflated[0].size() / robotSizeInCells;
-//	unsigned int fineHeight = inflated.size() / robotSizeInCells;
-//
+	cout << "Creating fine grid"<<endl;
+	unsigned int fineWidth = inflated.getWidth() / robotSizeInCells;
+	unsigned int fineHeight = inflated.getHeight() / robotSizeInCells;
+
+
+	fineGrid = BoolGrid(fineHeight, fineWidth);
+
+	inflated.forEach(setInFineGrid);
+	fineGrid.print();
+
 //	fineGrid.resize(fineHeight);
 //	for (unsigned int i = 0 ; i < fineHeight ; i++){
 //		fineGrid[i].resize(fineWidth);
