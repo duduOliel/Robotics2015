@@ -10,17 +10,7 @@
 
 using namespace std;
 
-///////////////////////////////////
-Grid::GridRow::GridRow(Grid &parent, int row) :	parent(parent),row(row){
-}
-
-std::_Bit_reference& Grid::GridRow::operator[](unsigned int col)
-{
-	return parent.grid[row][col];
-}
-/////////////////////////////
-
-Grid::Grid(unsigned int height, unsigned int width):height(height), width(width) {
+BoolGrid::BoolGrid(unsigned int height, unsigned int width):height(height), width(width) {
 	grid.resize(height);
 	for (unsigned int i = 0 ; i < height ; ++i){
 		grid[i].resize(width);
@@ -31,20 +21,45 @@ Grid::Grid(unsigned int height, unsigned int width):height(height), width(width)
 
 }
 
-void Grid::print(){
+void BoolGrid::print(){
 	for (unsigned int i = 0 ; i < height ; ++i){
 		for (unsigned int j = 0 ; j < width ; ++j){
-			cout<<grid[i][j];
+			if (grid[i][j]){
+				cout<<"0";
+			} else {
+				cout <<" ";
+			}
+//			cout<< (grid[i][j] ? "0" : " ");
 		}
 		cout<<endl;
 	}
 }
 
-GridRow Grid::operator[](unsigned int row){
-	return new GridRow(this, row);
+void BoolGrid::forEach(void (*func)(unsigned int row, unsigned int col, bool val)){
+	for (unsigned int i = 0 ; i < height ; ++i){
+		for (unsigned int j = 0 ; j < width ; ++j){
+			func(i,j,grid[i][j]);
+		}
+		cout<<endl;
+	}
 }
 
-Grid::~Grid() {
+bool BoolGrid::checkInRadius(unsigned int row, unsigned int col, unsigned int radius){
+	for (unsigned int i = (row < radius ? 0 : row - radius) ; i < height && i < row + radius ; i++){
+		for (unsigned int j = (col < radius ? 0 : col - radius) ; j < width && j < col + radius; j++){
+			if (grid[i][j]){
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+void BoolGrid::setVal(unsigned int row, unsigned int col, bool val){
+	grid[row][col] = val;
+}
+
+BoolGrid::~BoolGrid() {
 	// TODO Auto-generated destructor stub
 }
 

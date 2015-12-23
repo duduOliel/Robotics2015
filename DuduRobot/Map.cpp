@@ -7,12 +7,15 @@
 
 #include "Map.h"
 
-Map::Map(const char* mapFile, float mapResolution, float robotSize):mapFile(mapFile), map(0,0),inflated(0,0), fineGrid(0,0) {
+Map* Map::globalmap = NULL;
+
+Map::Map(const char* mapFile, float mapResolution, float robotSize):mapFile(mapFile), map(0,0),inflated(0,0), fineGrid(0,0), grid(0,0) {
 	globalmap = this;
 	loadImage();
 	robotSizeInCells = robotSize/mapResolution;
 	inflateGrig();
 	createFineGrid();
+	createGrid();
 }
 
 void Map::loadImage(){
@@ -38,7 +41,6 @@ void Map::loadImage(){
 
 	map.print();
 }
-Map* Map::globalmap = NULL;
 
 void Map::checkRadiusForInflation(unsigned int row, unsigned int col, bool val){
 	globalmap->inflated.setVal(row, col, globalmap->map.checkInRadius(row, col, globalmap->robotSizeInCells / 2));
@@ -52,11 +54,13 @@ void Map::inflateGrig(){
 	inflated.forEach(checkRadiusForInflation);
 	inflated.print();
 }
+
 void Map::setInFineGrid(unsigned int row, unsigned int col, bool val){
 	if (val){
 		globalmap->fineGrid.setVal(row/globalmap->robotSizeInCells, col/globalmap->robotSizeInCells, true);
 	}
 }
+
 void Map::createFineGrid(){
 
 	cout << "Creating fine grid"<<endl;
@@ -68,29 +72,26 @@ void Map::createFineGrid(){
 
 	inflated.forEach(setInFineGrid);
 	fineGrid.print();
+}
 
-//	fineGrid.resize(fineHeight);
-//	for (unsigned int i = 0 ; i < fineHeight ; i++){
-//		fineGrid[i].resize(fineWidth);
-//		for (int j = 0 ; j < fineWidth ; j++){
-//			fineGrid[i][j] = false;
-//		}
+void Map::setInGrid(unsigned int row, unsigned int col, bool val){
+
+	globalmap->grid.setVal(row,col, globalmap->fineGrid.checkInRadius(row*2, col*2, 1));
+
+//	if (val){
+//		globalmap->grid.setVal(row/2, col/2, true);
 //	}
-//
-//	for (unsigned int i = 0 ; i < inflated.size() ; i++){
-//		for (unsigned int j = 0 ; j < inflated[i].size() ; j++){
-//			if (inflated[i][j]){
-//				fineGrid[i/robotSizeInCells][j/robotSizeInCells] = true;
-//			}
-//		}
-//	}
-//	// print inflated map
-//	for (unsigned int i = 0 ; i < fineHeight; i++){
-//		for (unsigned int j = 0 ; j < fineWidth; j++){
-//			cout << (fineGrid[i][j] ? "0" : " ");
-//		}
-//		cout<<"\n"<<endl;
-//	}
+}
+
+void Map::createGrid(){
+	cout<< "Creating grid"<<endl;
+
+	grid = BoolGrid(globalmap->fineGrid.getHeight() / 2, globalmap->fineGrid.getWidth() / 2);
+
+//	fineGrid.forEach(setInGrid);
+	grid.forEach(setInGrid);
+	grid.print();
+
 }
 //void convertToGrig();
 //void inflateGrig();

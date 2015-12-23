@@ -11,6 +11,7 @@
 #include "lodepng.h"
 #include <vector>
 #include <iostream>
+#include "Grid.h"
 
 using namespace std;
 
@@ -18,19 +19,26 @@ using namespace std;
 
 class Map {
 private:
+	static Map *globalmap;
 	const char* mapFile;
-	Grid map;
-	Grid inflated;
-	Grid fineGrid;
+	BoolGrid map;
+	BoolGrid inflated;
+	BoolGrid fineGrid;
+	BoolGrid grid;
+	unsigned int robotSizeInCells = 0;
 
 public:
 	Map(const char* mapFile, float mapResolution, float robotSize);
-	void printGrig();
 	virtual ~Map();
 private:
 	void loadImage();
-	void inflateGrig(unsigned int robotSizeInCells);
-	void createFineGrid(unsigned int robotSizeInCells);
+	void inflateGrig();
+	void createFineGrid();
+	void createGrid();
+
+	static void checkRadiusForInflation(unsigned int row, unsigned int col, bool val);
+	static void setInFineGrid(unsigned int row, unsigned int col, bool val);
+	static void setInGrid(unsigned int row, unsigned int col, bool val);
 
 //	void convertToGrig();
 
