@@ -29,6 +29,7 @@ private:
 
 public:
 	Map(const char* mapFile, float mapResolution, float robotSize);
+	BoolGrid& getCourseGrid();
 	virtual ~Map();
 private:
 	void loadImage();

@@ -18,6 +18,9 @@ Map::Map(const char* mapFile, float mapResolution, float robotSize):mapFile(mapF
 	createGrid();
 }
 
+BoolGrid& Map::getCourseGrid(){
+	return grid;
+}
 void Map::loadImage(){
 	cout << "Loading map file: " << mapFile << endl;
 	unsigned int mapWidth = 0;
@@ -76,20 +79,20 @@ void Map::createFineGrid(){
 
 void Map::setInGrid(unsigned int row, unsigned int col, bool val){
 
-	globalmap->grid.setVal(row,col, globalmap->fineGrid.checkInRadius(row*2, col*2, 1));
+//	globalmap->grid.setVal(row,col, globalmap->fineGrid.checkInRadius(row*2, col*2, 1));
 
-//	if (val){
-//		globalmap->grid.setVal(row/2, col/2, true);
-//	}
+	if (val){
+		globalmap->grid.setVal(row/2, col/2, true);
+	}
 }
 
 void Map::createGrid(){
 	cout<< "Creating grid"<<endl;
 
-	grid = BoolGrid(globalmap->fineGrid.getHeight() / 2, globalmap->fineGrid.getWidth() / 2);
+	grid = BoolGrid((globalmap->fineGrid.getHeight() / 2) + 1, (globalmap->fineGrid.getWidth() / 2) + 1);
 
 //	fineGrid.forEach(setInGrid);
-	grid.forEach(setInGrid);
+	fineGrid.forEach(setInGrid);
 	grid.print();
 
 }
