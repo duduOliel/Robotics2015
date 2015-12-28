@@ -1,6 +1,7 @@
 #include <iostream>
 #include <libplayerc++/playerc++.h>
 #include "Map.h"
+#include "STC.h"
 
 using namespace std;
 using namespace PlayerCc;
@@ -29,6 +30,6 @@ int main(){
 	float robotSize = 0.3;
 
 	Map map("roboticLabMap.png",mapResolution, robotSize);
-
+	STC stc(map, Position(8, 9.7));
 	cout<<"bye from Dudu robot";
 }

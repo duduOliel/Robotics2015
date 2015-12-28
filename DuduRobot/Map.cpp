@@ -9,7 +9,7 @@
 
 Map* Map::globalmap = NULL;
 
-Map::Map(const char* mapFile, float mapResolution, float robotSize):mapFile(mapFile), map(0,0),inflated(0,0), fineGrid(0,0), grid(0,0) {
+Map::Map(const char* mapFile, float mapResolution, float robotSize):mapFile(mapFile), mapResolution(mapResolution),map(0,0),inflated(0,0), fineGrid(0,0), grid(0,0) {
 	globalmap = this;
 	loadImage();
 	robotSizeInCells = robotSize/mapResolution;
@@ -95,6 +95,11 @@ void Map::createGrid(){
 	fineGrid.forEach(setInGrid);
 	grid.print();
 
+}
+
+Position Map::pointToCourseGridCell(Position p){
+	float factor = mapResolution * robotSizeInCells * 2;
+	return Position(round(p.first/ factor), round(p.second /factor));
 }
 //void convertToGrig();
 //void inflateGrig();

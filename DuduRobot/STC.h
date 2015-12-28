@@ -15,7 +15,6 @@
 
 using namespace std;
 
-typedef pair<int, int> Position;
 
 class STC {
 private:
@@ -24,10 +23,8 @@ private:
 	Map &map;
 	vector<vector<Node *> > graph;
 
-
 	void buildGraph();
 	void DFS(Node *node);
-
 	void DFSInternal(Node* node, int rowOffset, int colOffset);
 public:
 	STC(Map &map, Position initialRobotPos);

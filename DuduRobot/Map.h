@@ -11,16 +11,19 @@
 #include "lodepng.h"
 #include <vector>
 #include <iostream>
+#include <math.h>
 #include "Grid.h"
 
 using namespace std;
 
 //typedef vector<vector<bool> > Grid;
+typedef pair<int, int> Position;
 
 class Map {
 private:
 	static Map *globalmap;
 	const char* mapFile;
+	float mapResolution;
 	BoolGrid map;
 	BoolGrid inflated;
 	BoolGrid fineGrid;
@@ -30,6 +33,8 @@ private:
 public:
 	Map(const char* mapFile, float mapResolution, float robotSize);
 	BoolGrid& getCourseGrid();
+	Position pointToCourseGridCell(Position p);
+
 	virtual ~Map();
 private:
 	void loadImage();
