@@ -40,7 +40,7 @@
 								<option id="gnu.cpp.link.option.libs.904706050" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="playerc++"/>
 								</option>
-								<option id="gnu.cpp.link.option.paths.1033606690" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
+								<option id="gnu.cpp.link.option.paths.1033606690" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="/usr/local/lib"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1881694393" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">

@@ -128,17 +128,25 @@ void Map::drowCourseLine(unsigned int startX, unsigned int startY, unsigned int 
 	//	proccessedCourse.print();
 }
 
-void Map::drowMapWithCourse(const char* outputFile){
+void Map::drowMapWithCourse(const char* outputFile, Position robotStartingPoing){
+	Position convertedStartingPoint(robotStartingPoing.first / mapResolution, robotStartingPoing.second / mapResolution);
 	proccessedCourse.print();
 	vector<unsigned char> image;
 	for (unsigned int i = 0 ; i < map.getHeight() ; i++){
 		for (unsigned int j = 0 ; j < map.getWidth() ; j++){
-			if (proccessedCourse[i][j]){ // Add red pixel
+			// First if checks if we are in the robot area, then paint robot in blue
+			if (abs((int)i - (int)convertedStartingPoint.first) < (int)robotSizeInCells / 2 && abs((int)j - (int)convertedStartingPoint.second) < (int)robotSizeInCells / 2){
+				image.push_back(0);
+				image.push_back(0);
+				image.push_back(255);
+				image.push_back(255);
+			} else if (proccessedCourse[i][j]){ // Add red pixel
 				image.push_back(255);
 				image.push_back(0);
 				image.push_back(0);
 				image.push_back(255);
 			} else if (!map[i][j]){ // add white pixel
+//			} else if (!inflated[i][j]){ // add white pixel
 				image.push_back(255);
 				image.push_back(255);
 				image.push_back(255);

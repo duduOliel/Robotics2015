@@ -12,6 +12,7 @@
 #include <vector>
 #include <iostream>
 #include <math.h>
+#include <stdlib.h>
 #include "Grid.h"
 
 using namespace std;
@@ -29,14 +30,14 @@ private:
 	BoolGrid fineGrid;
 	BoolGrid grid;
 	BoolGrid proccessedCourse;
-	unsigned int robotSizeInCells = 0;
+	unsigned int robotSizeInCells;
 
 public:
 	Map(const char* mapFile, float mapResolution, float robotSize);
 	BoolGrid& getCourseGrid();
 	Position pointToCourseGridCell(Position p);
 	void drowCourseLine(unsigned int startX, unsigned int startY, unsigned int endX, unsigned int endY);
-	void drowMapWithCourse(const char* outputFile);
+	void drowMapWithCourse(const char* outputFile, Position robotStartingPoing);
 
 
 	virtual ~Map();
