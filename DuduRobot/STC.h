@@ -26,6 +26,7 @@ private:
 	void buildGraph();
 	void DFS(Node *node);
 	void DFSInternal(Node* node, int rowOffset, int colOffset);
+	void writeCourseToMap(Node* node);
 public:
 	STC(Map &map, Position initialRobotPos);
 	void buildSpanningTree();

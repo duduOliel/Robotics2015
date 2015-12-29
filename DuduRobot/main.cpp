@@ -31,5 +31,8 @@ int main(){
 
 	Map map("roboticLabMap.png",mapResolution, robotSize);
 	STC stc(map, Position(8, 9.7));
+
+	cout<<"Writeing output file"<<endl;
+	map.drowMapWithCourse("out.png");
 	cout<<"bye from Dudu robot";
 }

@@ -28,12 +28,16 @@ private:
 	BoolGrid inflated;
 	BoolGrid fineGrid;
 	BoolGrid grid;
+	BoolGrid proccessedCourse;
 	unsigned int robotSizeInCells = 0;
 
 public:
 	Map(const char* mapFile, float mapResolution, float robotSize);
 	BoolGrid& getCourseGrid();
 	Position pointToCourseGridCell(Position p);
+	void drowCourseLine(unsigned int startX, unsigned int startY, unsigned int endX, unsigned int endY);
+	void drowMapWithCourse(const char* outputFile);
+
 
 	virtual ~Map();
 private:

@@ -34,12 +34,13 @@ STC::STC(Map &map, Position initialRobotPos) : map(map), initialRobotPos(initial
 
 	cout<<"After DFS"<<endl;
 	for (unsigned int i = 0 ; i < graph.size() ; i++){
-			for (unsigned int j = 0 ; j < graph[i].size() ; j++){
-				cout<<((graph[i][j] != NULL) && (graph[i][j]->neighborsInTree.size() > 0) ? graph[i][j]->neighborsInTree.size() : 0);
-			}
-			cout<<endl;
+		for (unsigned int j = 0 ; j < graph[i].size() ; j++){
+			cout<<((graph[i][j] != NULL) && (graph[i][j]->neighborsInTree.size() > 0) ? graph[i][j]->neighborsInTree.size() : 0);
 		}
+		cout<<endl;
+	}
 
+	writeCourseToMap(graph[initialPosInCourseGrid.first][initialPosInCourseGrid.second]);
 }
 
 void STC::buildGraph(){
@@ -58,7 +59,7 @@ void STC::buildGraph(){
 }
 
 void STC::DFS(Node *node){
-
+	node->visited = true;
 	DFSInternal(node,-1 , 0); // north
 	DFSInternal(node, 0	, 1); // east
 	DFSInternal(node, 1	, 0); // south
@@ -83,6 +84,15 @@ void STC::DFSInternal(Node* node, int rowOffset, int colOffset){
 		node->neighborsInTree.push_back(graph[r][c]);
 
 		DFS(graph[r][c]);
+	}
+}
+
+void STC::writeCourseToMap(Node* node){
+	if (node != NULL){
+		for (unsigned int i = 0 ; i < node->neighborsInTree.size() ; i++){
+			map.drowCourseLine(node->row, node->col, node->neighborsInTree[i]->row, node->neighborsInTree[i]->col);
+			writeCourseToMap(node->neighborsInTree[i]);
+		}
 	}
 }
 
