@@ -15,6 +15,7 @@
 
 using namespace std;
 
+typedef vector<Position> Path();
 
 class STC {
 private:
@@ -27,10 +28,12 @@ private:
 	void DFS(Node *node);
 	void DFSInternal(Node* node, int rowOffset, int colOffset);
 	void writeCourseToMap(Node* node);
+
 public:
 	STC(Map &map, Position initialRobotPos);
 	void buildSpanningTree();
 	void drawSpanningTree();
+	vector<Position> generatePath(Position initialRobotPos);
 	virtual ~STC();
 };
 

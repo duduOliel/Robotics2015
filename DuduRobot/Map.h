@@ -18,7 +18,8 @@
 using namespace std;
 
 //typedef vector<vector<bool> > Grid;
-typedef pair<int, int> Position;
+typedef pair<double, double> Position;
+
 
 class Map {
 private:
@@ -36,6 +37,8 @@ public:
 	Map(const char* mapFile, float mapResolution, float robotSize);
 	BoolGrid& getCourseGrid();
 	Position pointToCourseGridCell(Position p);
+	Position pointToFineGridCell(Position p);
+	Position courseGridCellToMapPoint(Position p);
 	void drowCourseLine(unsigned int startX, unsigned int startY, unsigned int endX, unsigned int endY);
 	void drowMapWithCourse(const char* outputFile, Position robotStartingPoing);
 
@@ -47,13 +50,10 @@ private:
 	void createFineGrid();
 	void createGrid();
 
+
 	static void checkRadiusForInflation(unsigned int row, unsigned int col, bool val);
 	static void setInFineGrid(unsigned int row, unsigned int col, bool val);
 	static void setInGrid(unsigned int row, unsigned int col, bool val);
-
-//	void convertToGrig();
-
-//	void convertToFineGrid();
 };
 
 #endif /* MAP_H_ */

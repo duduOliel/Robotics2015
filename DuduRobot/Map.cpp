@@ -58,10 +58,15 @@ void Map::inflateGrig(){
 	inflated.print();
 }
 
+//void Map::setInFineGrid(unsigned int row, unsigned int col, bool val){
+//	if (val){
+//		globalmap->fineGrid.setVal(row/globalmap->robotSizeInCells, col/globalmap->robotSizeInCells, true);
+//	}
+//}
+
 void Map::setInFineGrid(unsigned int row, unsigned int col, bool val){
-	if (val){
-		globalmap->fineGrid.setVal(row/globalmap->robotSizeInCells, col/globalmap->robotSizeInCells, true);
-	}
+	bool isOcupied = globalmap->inflated.checkInRadius((row * globalmap->robotSizeInCells) + globalmap->robotSizeInCells / 2, (col * globalmap->robotSizeInCells) + globalmap->robotSizeInCells / 2, globalmap->robotSizeInCells / 2);
+	globalmap->fineGrid.setVal(row,col,isOcupied);
 }
 
 void Map::createFineGrid(){
@@ -73,7 +78,8 @@ void Map::createFineGrid(){
 
 	fineGrid = BoolGrid(fineHeight, fineWidth);
 
-	inflated.forEach(setInFineGrid);
+//	inflated.forEach(setInFineGrid);
+	fineGrid.forEach(setInFineGrid);
 	fineGrid.print();
 }
 
@@ -102,25 +108,48 @@ Position Map::pointToCourseGridCell(Position p){
 	return Position(round(p.first/ factor), round(p.second /factor));
 }
 
+Position Map::pointToFineGridCell(Position p){
+	float factor = mapResolution * robotSizeInCells;
+	return Position(round(p.first/ factor), round(p.second /factor));
+}
+
+Position Map::courseGridCellToMapPoint(Position p){
+	// could do it single like but made it verbose for readability
+	double x = p.first;
+	double y = p.second;
+
+	// To fine grid cell
+	x *= 2;
+	y *= 2;
+
+	// To map coordinates
+	x *= robotSizeInCells;
+	y *= robotSizeInCells;
+
+	// to middle of area represented by fine grid
+	x += robotSizeInCells;
+	y += robotSizeInCells;
+
+	return Position(x, y);
+}
+
 void Map::drowCourseLine(unsigned int startX, unsigned int startY, unsigned int endX, unsigned int endY){
-	float factor = robotSizeInCells * 2;
-	unsigned int mapStartX = startX * factor;
-	unsigned int mapStartY = startY * factor;
-	unsigned int mapEndX = endX * factor;
-	unsigned int mapEndY = endY * factor;
+
+	Position start = courseGridCellToMapPoint(Position(startX, startY));
+	Position end = courseGridCellToMapPoint(Position(endX, endY));
 
 	if (proccessedCourse.getHeight() == 0 && proccessedCourse.getWidth() == 0){
 		proccessedCourse = BoolGrid(map.getHeight(), map.getWidth());
 	}
 
-	if (mapStartX != mapEndX && mapStartY != mapEndY){
+	if (start.first != end.first && start.second != end.second){
 		throw "No diagonal lines supported";
 	}
 
-	cout<<"FromX: " << mapStartX << " FromY: " << mapStartY << " ToX: " << mapEndX << " ToY: " << mapEndY << endl;
+	cout<<"FromX: " << start.first << " FromY: " << start.second << " ToX: " << end.first << " ToY: " << end.second << endl;
 
-	for (unsigned int i = min(mapStartX,mapEndX) ; i <= max(mapStartX,mapEndX) ; i++){
-		for (unsigned int j = min(mapStartY,mapEndY) ; j <= max(mapStartY, mapEndY); j++){
+	for (unsigned int i = min(start.first,end.first) ; i <= max(start.first,end.first) ; i++){
+		for (unsigned int j = min(start.second,end.second) ; j <= max(start.second, end.second); j++){
 			proccessedCourse[i][j] = true;
 		}
 	}
@@ -145,8 +174,19 @@ void Map::drowMapWithCourse(const char* outputFile, Position robotStartingPoing)
 				image.push_back(0);
 				image.push_back(0);
 				image.push_back(255);
-			} else if (!map[i][j]){ // add white pixel
-//			} else if (!inflated[i][j]){ // add white pixel
+			} else if ((i%(robotSizeInCells*2) == 0)  || (j%(robotSizeInCells*2) == 0)){
+				image.push_back(70);
+				image.push_back(70);
+				image.push_back(0);
+				image.push_back(255);
+			} else if ((i%(robotSizeInCells) == 0)  || (j%(robotSizeInCells) == 0)){ // Add red pixel
+				image.push_back(70);
+				image.push_back(120);
+				image.push_back(255);
+				image.push_back(255);
+
+//			}  else if (!map[i][j]){ // add black pixel
+			} else if (!inflated[i][j]){ // add white pixel
 				image.push_back(255);
 				image.push_back(255);
 				image.push_back(255);

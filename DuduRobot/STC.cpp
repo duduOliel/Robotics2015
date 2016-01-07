@@ -96,10 +96,25 @@ void STC::writeCourseToMap(Node* node){
 	}
 }
 
-STC::~STC() {
-	for (unsigned int i = 0 ; i < graph.size() ; i++){
-		for (unsigned int j = 0 ; j < graph[i].size() ; j++){
-			delete graph[i][j];
+vector<Position> STC::generatePath(Position initialRobotPos){
+	vector<Position> retval;
+	// get robot initial position on fine grid
+	Position robotPos = map.pointToFineGridCell(initialRobotPos);
+	retval.push_back(robotPos);
+	do{
+		if (canProceedUp()){
+			robotPos.second -= 1;
+		} else if(canProceedDown()){
+			robotPos.second += 1;
+		} if (canProceedigh()){
+
 		}
-	}
+
+	} while (robotPos != map.pointToFineGridCell(initialRobotPos));
+
+	return vector<Position>();
+}
+
+STC::~STC(){
+
 }
