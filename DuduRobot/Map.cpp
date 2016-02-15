@@ -203,10 +203,27 @@ void Map::drowMapWithCourse(const char* outputFile, Position robotStartingPoing)
 	lodepng::encode(outputFile, image, map.getWidth(), map.getHeight());
 }
 
-//void convertToGrig();
-//void inflateGrig();
-//void convertToFineGrid();
+Position Map::getCounterColockwiseDefaultStep(Position& fineGridCell){
+	int x = ((int)fineGridCell.first) % 2;
+	int y = ((int)fineGridCell.second) % 2;
 
+	return Position(-x+y, 1 -(x+y));
+
+//	if ( x % 2 == 0 && y % 2 == 0){
+//		return Position(0,1);
+//	} else if(x % 2 == 0 && y % 2 == 1){
+//		return Position(1,0);
+//	} else if(x % 2 == 1 && y % 2 == 1){
+//		return Position(0, -1);
+//	} else if(x % 2 == 1 && y % 2 == 0){
+//		return Position(-1, 0);
+//	}
+//
+//	// shouldn't get here, all options are covered above
+//	cout<<"Error in getCounterCloclwiseDefaultStep";
+//	throw "Error in getCounterCloclwiseDefaultStep";
+////	return Position(0,0);
+}
 
 Map::~Map() {
 	// TODO Auto-generated destructor stub

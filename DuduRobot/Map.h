@@ -41,7 +41,7 @@ public:
 	Position courseGridCellToMapPoint(Position p);
 	void drowCourseLine(unsigned int startX, unsigned int startY, unsigned int endX, unsigned int endY);
 	void drowMapWithCourse(const char* outputFile, Position robotStartingPoing);
-
+	Position getCounterColockwiseDefaultStep(Position& rotobPos);
 
 	virtual ~Map();
 private:

@@ -61,11 +61,9 @@ void STC::buildGraph(){
 void STC::DFS(Node *node){
 	node->visited = true;
 	DFSInternal(node,-1 , 0); // north
-	DFSInternal(node, 0	, 1); // east
-	DFSInternal(node, 1	, 0); // south
 	DFSInternal(node, 0	,-1); // west
-
-
+	DFSInternal(node, 1	, 0); // south
+	DFSInternal(node, 0	, 1); // east
 }
 
 void STC::DFSInternal(Node* node, int rowOffset, int colOffset){
@@ -96,23 +94,47 @@ void STC::writeCourseToMap(Node* node){
 	}
 }
 
+void STC::followGraph(Node *node, Position& robotPos, vector<Position>& waypoints){
+	if (node->neighborsInTree.size() == 0) {// U turn
+		for (int i = 0 ; i < 3 ; i++){ // Add 3 steps for the robot withing the same course grid cell
+			Position nextStep = map.getCounterColockwiseDefaultStep(robotPos);
+			moveBotAddWaypoint(robotPos, waypoints, nextStep.first, nextStep.second);
+		}
+	}
+
+	for (unsigned int i = 0 ; i < node->neighborsInTree.size() ; i++){
+		Node* currNeighbor = node->neighborsInTree[i];
+		int dx = currNeighbor->row - node->row;
+		int dy = currNeighbor->col - node->col;
+
+
+		Position nextStep = map.getCounterColockwiseDefaultStep(robotPos);
+		// if robot next counter clock wise step is similar to next neighbor, move in that direction
+		if (dx == nextStep.first && dy == nextStep.second){
+			moveBotAddWaypoint(robotPos, waypoints, dx, dy);
+		}
+
+
+
+	}
+}
+
+void STC::moveBotAddWaypoint(Position& robotPos, vector<Position>& waypoints, int dx, int dy){
+	robotPos.first = robotPos.first + dx;
+	robotPos.second = robotPos.second + dy;
+	waypoints.push_back(*new Position(robotPos.first, robotPos.second)); // create new object for waypoints list
+}
+
 vector<Position> STC::generatePath(Position initialRobotPos){
 	vector<Position> retval;
 	// get robot initial position on fine grid
 	Position robotPos = map.pointToFineGridCell(initialRobotPos);
-	retval.push_back(robotPos);
-	do{
-		if (canProceedUp()){
-			robotPos.second -= 1;
-		} else if(canProceedDown()){
-			robotPos.second += 1;
-		} if (canProceedigh()){
+	Position firstCoursGridCell = map.pointToCourseGridCell(initialRobotPos);
 
-		}
+	retval.push_back(*new Position(robotPos.first, robotPos.second));
+	followGraph(graph[robotPos.first][firstCoursGridCell.second], robotPos, retval);
 
-	} while (robotPos != map.pointToFineGridCell(initialRobotPos));
-
-	return vector<Position>();
+	return retval;
 }
 
 STC::~STC(){

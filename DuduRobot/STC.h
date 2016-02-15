@@ -28,7 +28,8 @@ private:
 	void DFS(Node *node);
 	void DFSInternal(Node* node, int rowOffset, int colOffset);
 	void writeCourseToMap(Node* node);
-
+	void followGraph(Node *node, Position& robotPos, vector<Position>& waypoints);
+	void moveBotAddWaypoint(Position& robotPos, vector<Position>& waypoints, int dx, int dy);
 public:
 	STC(Map &map, Position initialRobotPos);
 	void buildSpanningTree();
