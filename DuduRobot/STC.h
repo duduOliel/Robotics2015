@@ -20,8 +20,8 @@ typedef vector<Position> Path();
 class STC {
 private:
 	static STC* globalstc;
-	Position initialRobotPos;
 	Map &map;
+	Position initialRobotPos;
 	vector<vector<Node *> > graph;
 
 	void buildGraph();
@@ -29,12 +29,14 @@ private:
 	void DFSInternal(Node* node, int rowOffset, int colOffset);
 	void writeCourseToMap(Node* node);
 	void followGraph(Node *node, Position& robotPos, vector<Position>& waypoints);
+	void handleSingleNode(Node *node, Node* nextNode,Position& robotPos, vector<Position>& waypoints);
 	void moveBotAddWaypoint(Position& robotPos, vector<Position>& waypoints, int dx, int dy);
+	bool isNextStepInSameNode(const Position currPos,const Position nextStep);
 public:
 	STC(Map &map, Position initialRobotPos);
 	void buildSpanningTree();
 	void drawSpanningTree();
-	vector<Position> generatePath(Position initialRobotPos);
+	vector<Position> generatePath();
 	virtual ~STC();
 };
 

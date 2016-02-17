@@ -93,29 +93,48 @@ void STC::writeCourseToMap(Node* node){
 		}
 	}
 }
-
 void STC::followGraph(Node *node, Position& robotPos, vector<Position>& waypoints){
-	if (node->neighborsInTree.size() == 0) {// U turn
-		for (int i = 0 ; i < 3 ; i++){ // Add 3 steps for the robot withing the same course grid cell
-			Position nextStep = map.getCounterColockwiseDefaultStep(robotPos);
-			moveBotAddWaypoint(robotPos, waypoints, nextStep.first, nextStep.second);
+	if (node->neighborsInTree.empty()){
+		handleSingleNode(node, NULL, robotPos, waypoints);
+	} else {
+		for (unsigned int i = 0 ; i < node->neighborsInTree.size() ; i++){
+			handleSingleNode(node, node->neighborsInTree[i], robotPos, waypoints);
+			followGraph(node->neighborsInTree[i], robotPos, waypoints);
 		}
 	}
+}
 
-	for (unsigned int i = 0 ; i < node->neighborsInTree.size() ; i++){
-		Node* currNeighbor = node->neighborsInTree[i];
-		int dx = currNeighbor->row - node->row;
-		int dy = currNeighbor->col - node->col;
+void STC::handleSingleNode(Node *node, Node* nextNode,Position& robotPos, vector<Position>& waypoints){
+	if (nextNode == NULL) {// U turn
+		Position nextStep;
+		for (int i = 0 ; i < 3 ; i++){ // Add 3 steps for the robot withing the same course grid cell
+			nextStep = map.getCounterColockwiseDefaultStep(robotPos);
+			moveBotAddWaypoint(robotPos, waypoints, nextStep.first, nextStep.second);
+		}
+		// perform another step to get to the next tree node
+		moveBotAddWaypoint(robotPos, waypoints, nextStep.first, nextStep.second);
+	}else {
+		int dx = nextNode->row - node->row;
+		int dy = nextNode->col - node->col;
 
 
 		Position nextStep = map.getCounterColockwiseDefaultStep(robotPos);
 		// if robot next counter clock wise step is similar to next neighbor, move in that direction
 		if (dx == nextStep.first && dy == nextStep.second){
+			if (isNextStepInSameNode(robotPos, Position(robotPos.first + dx, robotPos.second + dy))){ // there is a need to move two steps
+				moveBotAddWaypoint(robotPos, waypoints, dx, dy);
+			}
 			moveBotAddWaypoint(robotPos, waypoints, dx, dy);
+		} else { // there is a turn
+			if (isNextStepInSameNode(robotPos, Position(robotPos.first + dx, robotPos.second + dy))){ // turn gets to the next node
+				moveBotAddWaypoint(robotPos, waypoints, dx, dy);
+			} else { // turn inside a node, should perform two + 1 steps (1 is to get to the next node
+				moveBotAddWaypoint(robotPos, waypoints, nextStep.first, nextStep.second);
+				nextStep = map.getCounterColockwiseDefaultStep(robotPos);
+				moveBotAddWaypoint(robotPos, waypoints, nextStep.first, nextStep.second);
+				moveBotAddWaypoint(robotPos, waypoints, nextStep.first, nextStep.second);
+			}
 		}
-
-
-
 	}
 }
 
@@ -123,16 +142,29 @@ void STC::moveBotAddWaypoint(Position& robotPos, vector<Position>& waypoints, in
 	robotPos.first = robotPos.first + dx;
 	robotPos.second = robotPos.second + dy;
 	waypoints.push_back(*new Position(robotPos.first, robotPos.second)); // create new object for waypoints list
+	cout << "RobotPos: " << robotPos.first << " " << robotPos.second << endl;
 }
 
-vector<Position> STC::generatePath(Position initialRobotPos){
+bool STC::isNextStepInSameNode(const Position currPos, const Position nextPosition){
+	Position currLocation = map.courseGridCellToWorldPosition(currPos);
+	Position currNode = map.pointToCourseGridCell(currLocation);
+
+	Position nextLocation = map.courseGridCellToWorldPosition(nextPosition);
+	Position nextNode = map.pointToCourseGridCell(nextLocation);
+
+	return currNode.first == nextNode.first && currNode.second == nextNode.second;
+}
+
+vector<Position> STC::generatePath(){
 	vector<Position> retval;
 	// get robot initial position on fine grid
 	Position robotPos = map.pointToFineGridCell(initialRobotPos);
 	Position firstCoursGridCell = map.pointToCourseGridCell(initialRobotPos);
 
+
 	retval.push_back(*new Position(robotPos.first, robotPos.second));
-	followGraph(graph[robotPos.first][firstCoursGridCell.second], robotPos, retval);
+	Node* x =  graph[(int)robotPos.first][(int)firstCoursGridCell.second];
+	followGraph(graph[(int)robotPos.first][(int)firstCoursGridCell.second], robotPos, retval);
 
 	return retval;
 }

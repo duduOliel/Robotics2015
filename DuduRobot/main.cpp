@@ -32,9 +32,12 @@ int main(){
 	float robotSize = conf.getFloat(Config::ROBOT_SIZE); //strtof(conf[Config::ROBOT_SIZE].c_str(), 0); //0.3;
 
 	Map map("roboticLabMap.png",mapResolution, robotSize);
+//	STC stc(map, Position(8.4, 9.7));
 	STC stc(map, Position(7, 9));
 
 	cout<<"Writing output file"<<endl;
-	map.drowMapWithCourse("out.png", Position(8.4, 9.7));
+	map.drowMapWithCourse("out.png", Position(7,9));
 	cout<<"bye from Dudu robot";
+
+	vector<Position> path = stc.generatePath();
 }
