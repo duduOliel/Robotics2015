@@ -9,13 +9,20 @@
 
 Map* Map::globalmap = NULL;
 
-Map::Map(const char* mapFile, float mapResolution, float robotSize):mapFile(mapFile), mapResolution(mapResolution),map(0,0),inflated(0,0), fineGrid(0,0), grid(0,0),proccessedCourse(0,0) {
+Map::Map(const char* mapFile, float mapResolution, float robotSize):mapFile(mapFile), mapResolution(mapResolution),map(0,0),inflated(0,0), fineGrid(0,0), grid(0,0),graphOnMap(0,0) {
 	globalmap = this;
 	loadImage();
 	robotSizeInCells = robotSize/mapResolution;
 	inflateGrig();
 	createFineGrid();
 	createGrid();
+
+
+	map.printSizes("map");
+	inflated.printSizes("inflated");
+	fineGrid.printSizes("fineGrid");
+	grid.printSizes("grid");
+	graphOnMap.printSizes("proccessedCourse");
 }
 
 BoolGrid& Map::getCourseGrid(){
@@ -143,8 +150,8 @@ void Map::drowCourseLine(unsigned int startX, unsigned int startY, unsigned int 
 	Position start = courseGridCellToMapPoint(Position(startX, startY));
 	Position end = courseGridCellToMapPoint(Position(endX, endY));
 
-	if (proccessedCourse.getHeight() == 0 && proccessedCourse.getWidth() == 0){
-		proccessedCourse = BoolGrid(map.getHeight(), map.getWidth());
+	if (graphOnMap.getHeight() == 0 && graphOnMap.getWidth() == 0){
+		graphOnMap = BoolGrid(map.getHeight(), map.getWidth());
 	}
 
 	if (start.first != end.first && start.second != end.second){
@@ -155,7 +162,7 @@ void Map::drowCourseLine(unsigned int startX, unsigned int startY, unsigned int 
 
 	for (unsigned int i = min(start.first,end.first) ; i <= max(start.first,end.first) ; i++){
 		for (unsigned int j = min(start.second,end.second) ; j <= max(start.second, end.second); j++){
-			proccessedCourse[i][j] = true;
+			graphOnMap[i][j] = true;
 		}
 	}
 
@@ -164,7 +171,7 @@ void Map::drowCourseLine(unsigned int startX, unsigned int startY, unsigned int 
 
 void Map::drowMapWithCourse(const char* outputFile, Position robotStartingPoing){
 	Position convertedStartingPoint(robotStartingPoing.first / mapResolution, robotStartingPoing.second / mapResolution);
-	proccessedCourse.print();
+	graphOnMap.print();
 	vector<unsigned char> image;
 	for (unsigned int i = 0 ; i < map.getHeight() ; i++){
 		for (unsigned int j = 0 ; j < map.getWidth() ; j++){
@@ -174,7 +181,7 @@ void Map::drowMapWithCourse(const char* outputFile, Position robotStartingPoing)
 				image.push_back(0);
 				image.push_back(255);
 				image.push_back(255);
-			} else if (proccessedCourse[i][j]){ // Add red pixel
+			} else if (graphOnMap[i][j]){ // Add red pixel
 				image.push_back(255);
 				image.push_back(0);
 				image.push_back(0);
@@ -209,10 +216,10 @@ void Map::drowMapWithCourse(const char* outputFile, Position robotStartingPoing)
 }
 
 Position Map::getCounterColockwiseDefaultStep(Position& fineGridCell){
-	int x = ((int)fineGridCell.first) % 2;
-	int y = ((int)fineGridCell.second) % 2;
+	int row = ((int)fineGridCell.first) % 2;
+	int col = ((int)fineGridCell.second) % 2;
 
-	return Position(-x+y, 1 -(x+y));
+	return Position(1 -(row+col), -col+row);
 
 //	if ( x % 2 == 0 && y % 2 == 0){
 //		return Position(0,1);

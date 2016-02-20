@@ -30,7 +30,7 @@ private:
 	BoolGrid inflated;
 	BoolGrid fineGrid;
 	BoolGrid grid;
-	BoolGrid proccessedCourse;
+	BoolGrid graphOnMap;
 	unsigned int robotSizeInCells;
 
 public:
@@ -43,7 +43,6 @@ public:
 	void drowCourseLine(unsigned int startX, unsigned int startY, unsigned int endX, unsigned int endY);
 	void drowMapWithCourse(const char* outputFile, Position robotStartingPoing);
 	Position getCounterColockwiseDefaultStep(Position& rotobPos);
-
 
 	virtual ~Map();
 private:

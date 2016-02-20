@@ -35,6 +35,10 @@ void BoolGrid::print(){
 	}
 }
 
+void BoolGrid::printSizes(string name){
+	cout<< name <<": height: " << getHeight() << " width: " << getWidth()<<endl;
+}
+
 void BoolGrid::forEach(void (*func)(unsigned int row, unsigned int col, bool val)){
 	for (unsigned int i = 0 ; i < height ; ++i){
 		for (unsigned int j = 0 ; j < width ; ++j){

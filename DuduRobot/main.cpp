@@ -37,7 +37,10 @@ int main(){
 
 	cout<<"Writing output file"<<endl;
 	map.drowMapWithCourse("out.png", Position(7,9));
-	cout<<"bye from Dudu robot";
+
 
 	vector<Position> path = stc.generatePath();
+
+
+	cout<<"bye from Dudu robot";
 }

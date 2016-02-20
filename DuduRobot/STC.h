@@ -32,6 +32,8 @@ private:
 	void handleSingleNode(Node *node, Node* nextNode,Position& robotPos, vector<Position>& waypoints);
 	void moveBotAddWaypoint(Position& robotPos, vector<Position>& waypoints, int dx, int dy);
 	bool isNextStepInSameNode(const Position currPos,const Position nextStep);
+	vector<Position> joinPath(const vector<Position> path);
+	void printPath(const vector<Position> path);
 public:
 	STC(Map &map, Position initialRobotPos);
 	void buildSpanningTree();

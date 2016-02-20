@@ -93,7 +93,14 @@ void STC::writeCourseToMap(Node* node){
 		}
 	}
 }
+void printWaypoints(vector<Position>& waypoints){
+	for (unsigned int i = 0 ; i < waypoints.size() ; i++){
+		cout <<"["<<waypoints[i].first<<","<<waypoints[i].second<<"] ";
+	}
+	cout<<endl;
+}
 void STC::followGraph(Node *node, Position& robotPos, vector<Position>& waypoints){
+	printWaypoints(waypoints);
 	if (node->neighborsInTree.empty()){
 		handleSingleNode(node, NULL, robotPos, waypoints);
 	} else {
@@ -130,9 +137,10 @@ void STC::handleSingleNode(Node *node, Node* nextNode,Position& robotPos, vector
 				moveBotAddWaypoint(robotPos, waypoints, dx, dy);
 			} else { // turn inside a node, should perform two + 1 steps (1 is to get to the next node
 				moveBotAddWaypoint(robotPos, waypoints, nextStep.first, nextStep.second);
-				nextStep = map.getCounterColockwiseDefaultStep(robotPos);
-				moveBotAddWaypoint(robotPos, waypoints, nextStep.first, nextStep.second);
-				moveBotAddWaypoint(robotPos, waypoints, nextStep.first, nextStep.second);
+				//nextStep = map.getCounterColockwiseDefaultStep(robotPos);
+				//moveBotAddWaypoint(robotPos, waypoints, nextStep.first, nextStep.second);
+				//moveBotAddWaypoint(robotPos, waypoints, nextStep.first, nextStep.second);
+				handleSingleNode(node, nextNode, robotPos, waypoints);
 			}
 		}
 	}
@@ -155,16 +163,45 @@ bool STC::isNextStepInSameNode(const Position currPos, const Position nextPositi
 	return currNode.first == nextNode.first && currNode.second == nextNode.second;
 }
 
+vector<Position> STC::joinPath(const vector<Position> path){
+
+}
+
+void STC::printPath(const vector<Position> sourcePath){
+	vector<vector<bool> > path;
+		path.resize(map.getCourseGrid().getHeight()*2);
+		for (unsigned int i = 0 ; i < path.size() ; i++){
+			path[i].resize(map.getCourseGrid().getWidth() * 2);
+			for (unsigned int j = 0 ; j < path[i].size() ; j++){
+				path[i][j] = false;
+			}
+		}
+		for (unsigned int i = 0 ; i < sourcePath.size(); i++){
+			path[sourcePath[i].first][sourcePath[i].second] = true;
+		}
+		for (unsigned int i = 0 ; i < path.size() ; i++){
+			for (unsigned int j = 0 ; j < path[i].size() ; j++){
+				cout << (path[i][j] ? "0":" ");
+			}
+			cout<<endl;
+		}
+}
+
 vector<Position> STC::generatePath(){
-	vector<Position> retval;
+	vector<Position> origPAth;
 	// get robot initial position on fine grid
 	Position robotPos = map.pointToFineGridCell(initialRobotPos);
 	Position firstCoursGridCell = map.pointToCourseGridCell(initialRobotPos);
 
 
-	retval.push_back(*new Position(robotPos.first, robotPos.second));
-	Node* x =  graph[(int)robotPos.first][(int)firstCoursGridCell.second];
-	followGraph(graph[(int)robotPos.first][(int)firstCoursGridCell.second], robotPos, retval);
+	origPAth.push_back(*new Position(robotPos.first, robotPos.second));
+	followGraph(graph[(int)firstCoursGridCell.first][(int)firstCoursGridCell.second], robotPos, origPAth);
+
+
+
+	printPath(origPAth);
+
+	vector<Position> retval = joinPath(origPAth);
 
 	return retval;
 }

@@ -26,6 +26,7 @@ public:
 
 	BoolGrid(unsigned int height, unsigned int width);
 	void print();
+	void printSizes(string name);
 	vector<bool>& operator[](unsigned int row) {return grid[row];}
 	void forEach(void (*func)(unsigned int row, unsigned int col, bool val));
 	void setVal(unsigned int row, unsigned int col, bool val);
