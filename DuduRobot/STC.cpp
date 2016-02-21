@@ -164,27 +164,57 @@ bool STC::isNextStepInSameNode(const Position currPos, const Position nextPositi
 }
 
 vector<Position> STC::joinPath(const vector<Position> path){
+	vector<Position> retval;
 
+	retval.push_back(path[0]);
+	if (path.size() > 1){
+		bool isMoveOnCols = path[0].first == path[1].first; // will be true if calls are not on the same row (first is row)
+		int i = 1;
+		while(i < path.size()){
+			if (isMoveOnCols){
+				while (path[i].first == retval[retval.size() - 1].first){
+					i++;
+				}
+				retval.push_back(path[i - 1]);
+				isMoveOnCols = !isMoveOnCols;
+			} else {
+				while (path[i].second == retval[retval.size() - 1].second){
+					i++;
+				}
+				retval.push_back(path[i - 1]);
+				isMoveOnCols = !isMoveOnCols;
+				//
+				//		for (unsigned int i = 1 ; i < path.size() ; i++){
+				//			if ((isMoveOnCols && (path[i].first != retval[retval.size() - 1].first)) ||
+				//					(!isMoveOnCols && (path[i].second != retval[retval.size() - 1].second)) ){
+				//				retval.push_back(path[i]);
+				//				isMoveOnCols = !isMoveOnCols;
+				//			}
+			}
+		}
+	}
+
+	return retval;
 }
 
 void STC::printPath(const vector<Position> sourcePath){
 	vector<vector<bool> > path;
-		path.resize(map.getCourseGrid().getHeight()*2);
-		for (unsigned int i = 0 ; i < path.size() ; i++){
-			path[i].resize(map.getCourseGrid().getWidth() * 2);
-			for (unsigned int j = 0 ; j < path[i].size() ; j++){
-				path[i][j] = false;
-			}
+	path.resize(map.getCourseGrid().getHeight()*2);
+	for (unsigned int i = 0 ; i < path.size() ; i++){
+		path[i].resize(map.getCourseGrid().getWidth() * 2);
+		for (unsigned int j = 0 ; j < path[i].size() ; j++){
+			path[i][j] = false;
 		}
-		for (unsigned int i = 0 ; i < sourcePath.size(); i++){
-			path[sourcePath[i].first][sourcePath[i].second] = true;
+	}
+	for (unsigned int i = 0 ; i < sourcePath.size(); i++){
+		path[sourcePath[i].first][sourcePath[i].second] = true;
+	}
+	for (unsigned int i = 0 ; i < path.size() ; i++){
+		for (unsigned int j = 0 ; j < path[i].size() ; j++){
+			cout << (path[i][j] ? "0":" ");
 		}
-		for (unsigned int i = 0 ; i < path.size() ; i++){
-			for (unsigned int j = 0 ; j < path[i].size() ; j++){
-				cout << (path[i][j] ? "0":" ");
-			}
-			cout<<endl;
-		}
+		cout<<endl;
+	}
 }
 
 vector<Position> STC::generatePath(){
@@ -199,9 +229,16 @@ vector<Position> STC::generatePath(){
 
 
 
+	cout<<"Original Path"<<endl;
 	printPath(origPAth);
 
 	vector<Position> retval = joinPath(origPAth);
+	cout<<"Joined path"<<endl;
+	printWaypoints(retval);
+	printPath(retval);
+
+	//Convert path to mapcoardinates
+	//	map.pointToCourseGridCell()
 
 	return retval;
 }
