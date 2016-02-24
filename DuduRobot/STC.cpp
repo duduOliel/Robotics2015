@@ -232,13 +232,17 @@ vector<Position> STC::generatePath(){
 	cout<<"Original Path"<<endl;
 	printPath(origPAth);
 
-	vector<Position> retval = joinPath(origPAth);
+	vector<Position> joinedPath = joinPath(origPAth);
 	cout<<"Joined path"<<endl;
-	printWaypoints(retval);
-	printPath(retval);
+	printWaypoints(joinedPath);
+	printPath(joinedPath);
 
-	//Convert path to mapcoardinates
-	//	map.pointToCourseGridCell()
+	//Convert path to worldmap
+	vector<Position> retval;
+	for (int i = 0 ; i < joinedPath.size() ; i++){
+		retval.push_back(map.fineGridToWorldPosition(joinedPath[i]));
+	}
+	printWaypoints(retval);
 
 	return retval;
 }

@@ -145,6 +145,11 @@ Position Map::courseGridCellToWorldPosition(Position p){
 	return Position(p.first* factor, p.second *factor);
 }
 
+Position Map::fineGridToWorldPosition(Position p){
+	float factor = mapResolution * robotSizeInCells;
+	return Position(p.first * factor, p.second * factor);
+}
+
 void Map::drowCourseLine(unsigned int startX, unsigned int startY, unsigned int endX, unsigned int endY){
 
 	Position start = courseGridCellToMapPoint(Position(startX, startY));

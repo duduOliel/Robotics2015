@@ -4,10 +4,14 @@
 #include "Map.h"
 #include "STC.h"
 #include "Config.h"
+#include "Robot.h"
+#include "behaviors/MoveToNextPoint.h"
+#include "behaviors/StopObsAhead.h"
+#include "behaviors/TurnToNextPoint.h"
+#include "Manager.h"
 
 using namespace std;
 using namespace PlayerCc;
-
 
 int main(){
 //	PlayerClient pc("localhost",6665);
@@ -41,6 +45,21 @@ int main(){
 
 	vector<Position> path = stc.generatePath();
 
+
+	// create behavior graph
+	Robot robot("localhost",6665);
+	MoveToNextPoint nextPoint(&robot, path);
+	TurnToNextPoint turn(&robot, path);
+	StopObsAhead stop(&robot);
+
+	nextPoint.addNext(&turn);
+	nextPoint.addNext(&stop);
+
+	turn.addNext(&nextPoint);
+
+	stop.addNext(&nextPoint);
+
+	Manager manager(&robot, &turn);
 
 	cout<<"bye from Dudu robot";
 }

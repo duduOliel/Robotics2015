@@ -40,6 +40,7 @@ public:
 	Position pointToFineGridCell(Position p);
 	Position courseGridCellToMapPoint(Position p);
 	Position courseGridCellToWorldPosition(Position p);
+	Position fineGridToWorldPosition(Position p);
 	void drowCourseLine(unsigned int startX, unsigned int startY, unsigned int endX, unsigned int endY);
 	void drowMapWithCourse(const char* outputFile, Position robotStartingPoing);
 	Position getCounterColockwiseDefaultStep(Position& rotobPos);

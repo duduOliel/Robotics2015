@@ -35,6 +35,10 @@ void Robot::setSpeed(double linearSpeed, double angularSpeed) {
 	pp->SetSpeed(linearSpeed, angularSpeed);
 }
 
+bool Robot::hasObsticalAhead(){
+	return (*lp)[ 2] < MIN_DISTANCE_FROM_OBSTICLE;
+}
+
 Robot::~Robot() {
 	delete pp;
 	delete lp;
