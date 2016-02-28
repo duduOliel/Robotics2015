@@ -7,7 +7,7 @@
 
 #include "TurnToNextPoint.h"
 
-TurnToNextPoint::TurnToNextPoint(Robot* robot, vector<Position> & path):Behavior(robot), path(path) {
+TurnToNextPoint::TurnToNextPoint(Robot* robot, vector<Position> & path, Map& map):MapAwareBehavior(robot, map), path(path) {
 	// TODO Auto-generated constructor stub
 
 }
@@ -32,8 +32,13 @@ bool TurnToNextPoint::stopCond(){
 	cout << "Robot Yaw: " << robotYaw;
 	robotYaw = constrainAngle(robotYaw);
 	cout << " Constrained robot Yaw: " << robotYaw;
-	double angleToNextPoint = constrainAngle(atan2(path[1].second - path[0].second, path[1].first - path[1].second));
-	cout << "Points ["<<path[1].first <<","<<path[1].second<<"] ["<<path[0].first <<","<<path[0].second<<"] angle"<<angleToNextPoint<<endl;
+
+
+	Position audoPos(_robot->getXPos(), _robot->getYPos());
+	Position robotPos = _map.normalizeRobotPos(audoPos);
+//	double angleToNextPoint = constrainAngle(atan2(path[1].second - path[0].second, path[1].first - path[0].second));
+		double angleToNextPoint = constrainAngle(atan2(path[1].second - robotPos.second, path[1].first - robotPos.first));
+	cout << "Points ["<<path[1].first <<","<<path[1].second<<"] ["<<robotPos.first <<","<<robotPos.second<<"] angle"<<angleToNextPoint<<endl;
 
 
 	if (abs(robotYaw - angleToNextPoint) < 0.0523599){ // 3 degrees

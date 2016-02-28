@@ -241,7 +241,12 @@ Position Map::getCounterColockwiseDefaultStep(Position& fineGridCell){
 //	throw "Error in getCounterCloclwiseDefaultStep";
 ////	return Position(0,0);
 }
+Position Map::normalizeRobotPos(Position& p){
+	double widthCorrection = (mapResolution * map.getWidth()) / 2;
+	double hightCorrection = (mapResolution * map.getHeight()) /2;
 
+	return Position(round(p.first * 100 + hightCorrection), round(p.first * 100 + widthCorrection));
+}
 Map::~Map() {
 	// TODO Auto-generated destructor stub
 }

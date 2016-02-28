@@ -36,10 +36,14 @@ int main(){
 	float robotSize = conf.getFloat(Config::ROBOT_SIZE); //strtof(conf[Config::ROBOT_SIZE].c_str(), 0); //0.3;
 
 	Map map("roboticLabMap.png",mapResolution, robotSize);
-//	STC stc(map, Position(8.4, 9.7));
-	float xPos = conf.getFloat(Config::ROBOT_INIITAL_X_POS);
-	float yPos = conf.getFloat(Config::ROBOT_INIITAL_Y_POS);
-//	STC stc(map, Position(7, 9));
+	Robot robot("localhost",6665);
+
+//	float xPos = conf.getFloat(Config::ROBOT_INIITAL_X_POS);
+//	float yPos = conf.getFloat(Config::ROBOT_INIITAL_Y_POS);
+	Position audoRobotPos(robot.getXPos(), robot.getYPos());
+	Position robotPos = map.normalizeRobotPos(audoRobotPos);
+	float xPos = robotPos.first;
+	float yPos = robotPos.second;
 	STC stc(map, Position(xPos, yPos));
 
 
@@ -51,9 +55,8 @@ int main(){
 
 
 	// create behavior graph
-	Robot robot("localhost",6665);
-	MoveToNextPoint nextPoint(&robot, path);
-	TurnToNextPoint turn(&robot, path);
+	MoveToNextPoint nextPoint(&robot, path, map);
+	TurnToNextPoint turn(&robot, path, map);
 	StopObsAhead stop(&robot);
 
 	nextPoint.addNext(&turn);

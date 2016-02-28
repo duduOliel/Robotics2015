@@ -44,7 +44,7 @@ public:
 	void drowCourseLine(unsigned int startX, unsigned int startY, unsigned int endX, unsigned int endY);
 	void drowMapWithCourse(const char* outputFile, Position robotStartingPoing);
 	Position getCounterColockwiseDefaultStep(Position& rotobPos);
-
+	Position normalizeRobotPos(Position& p);
 	virtual ~Map();
 private:
 	void loadImage();

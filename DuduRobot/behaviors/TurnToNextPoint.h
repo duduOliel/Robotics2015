@@ -9,18 +9,20 @@
 #define TURNTONEXTPOINT_H_
 #include <vector>
 #include <math.h>
-#include "Behavior.h"
+#include "../Map.h"
+#include "MapAwareBehavior.h"
 
 using namespace std;
 
 typedef pair<double, double> Position;
 
-class TurnToNextPoint: public Behavior {
+class TurnToNextPoint: public MapAwareBehavior {
 private:
 	vector<Position> path;
 	double constrainAngle(double x);
+
 public:
-	TurnToNextPoint(Robot* robot, vector<Position> & path);
+	TurnToNextPoint(Robot* robot, vector<Position> & path, Map& map);
 
 	virtual bool startCond();
 	virtual bool stopCond();
