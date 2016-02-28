@@ -146,7 +146,7 @@ Position Map::courseGridCellToWorldPosition(Position p){
 }
 
 Position Map::fineGridToWorldPosition(Position p){
-	float factor = mapResolution * robotSizeInCells;
+	float factor = robotSizeInCells * mapResolution;
 	return Position(p.first * factor, p.second * factor);
 }
 

@@ -30,6 +30,10 @@ STC::STC(Map &map, Position initialRobotPos) : map(map), initialRobotPos(initial
 	}
 
 	cout << "DFS start on: " << initialPosInCourseGrid.first<< "x" <<initialPosInCourseGrid.second <<endl;
+	if (!graph[initialPosInCourseGrid.first][initialPosInCourseGrid.second]){
+		cout << "Robot initial position is not on graph - robot starts on an obsitcal or inflated obsical, Aborting";
+		exit(1);
+	}
 	DFS(graph[initialPosInCourseGrid.first][initialPosInCourseGrid.second]);  //  calculate node by start pointd
 
 	cout<<"After DFS"<<endl;

@@ -37,10 +37,14 @@ int main(){
 
 	Map map("roboticLabMap.png",mapResolution, robotSize);
 //	STC stc(map, Position(8.4, 9.7));
-	STC stc(map, Position(7, 9));
+	float xPos = conf.getFloat(Config::ROBOT_INIITAL_X_POS);
+	float yPos = conf.getFloat(Config::ROBOT_INIITAL_Y_POS);
+//	STC stc(map, Position(7, 9));
+	STC stc(map, Position(xPos, yPos));
+
 
 	cout<<"Writing output file"<<endl;
-	map.drowMapWithCourse("out.png", Position(7,9));
+	map.drowMapWithCourse("out.png", Position(xPos,yPos));
 
 
 	vector<Position> path = stc.generatePath();
@@ -60,6 +64,8 @@ int main(){
 	stop.addNext(&nextPoint);
 
 	Manager manager(&robot, &turn);
+
+	manager.run();
 
 	cout<<"bye from Dudu robot";
 }
