@@ -14,7 +14,7 @@ using namespace PlayerCc;
 using namespace std;
 
 #define SAMPLES  666
-#define MIN_DISTANCE_FROM_OBSTICLE  0.5
+#define MIN_DISTANCE_FROM_OBSTICLE  0.20
 
 class Robot {
 private:

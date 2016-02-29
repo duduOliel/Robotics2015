@@ -20,52 +20,40 @@ double TurnToNextPoint::constrainAngle(double x){
 }
 
 bool TurnToNextPoint::startCond(){
-	// Robot at first point in path
-	return (abs(_robot->getXPos() - path[0].second) > 10 * DISTANCE_TOLERANCE &&
-			abs(_robot->getYPos() - path[0].first) > 10 * DISTANCE_TOLERANCE);
+	// start if robot is not on the same place as next point
+//	cout<<"TurnToNextPoint start condition robot pos: "<<_robot->getXPos() - path[0].first<<endl;
+	return !(abs(_robot->getXPos() - path[0].first) < DISTANCE_TOLERANCE &&
+			abs(_robot->getYPos() - path[0].second) <  DISTANCE_TOLERANCE);
 }
 
 bool TurnToNextPoint::stopCond(){
 // Robot points next position
 
 	double robotYaw = _robot->getYaw();
-	cout << "Robot Yaw: " << robotYaw;
+//	cout << "Robot Yaw: " << robotYaw;
 	robotYaw = constrainAngle(robotYaw);
-	cout << " Constrained robot Yaw: " << robotYaw;
+//	cout << " Constrained robot Yaw: " << robotYaw;
 
 
 	Position audoPos(_robot->getXPos(), _robot->getYPos());
-	Position robotPos = _map.normalizeRobotPos(audoPos);
+	//Position robotPos = _map.normalizeRobotPos(audoPos);
 //	double angleToNextPoint = constrainAngle(atan2(path[1].second - path[0].second, path[1].first - path[0].second));
-		double angleToNextPoint = constrainAngle(atan2(path[1].second - robotPos.second, path[1].first - robotPos.first));
-	cout << "Points ["<<path[1].first <<","<<path[1].second<<"] ["<<robotPos.first <<","<<robotPos.second<<"] angle"<<angleToNextPoint<<endl;
+		double angleToNextPoint = constrainAngle(atan2(path[0].first - audoPos.first, path[0].second - audoPos.second));
+//	cout << "Points ["<<path[0].first <<","<<path[0].second<<"] ["<<audoPos.first <<","<<audoPos.second<<"] angle"<<angleToNextPoint<<endl;
 
 
 	if (abs(robotYaw - angleToNextPoint) < 0.0523599){ // 3 degrees
-		path.erase(path.begin());
+//		path.erase(path.begin());
+		_robot->setSpeed(0,0);
 		return true;
 	}
 	return false;
-//
-//	if (path[0].first == path[1].first){ // Moving on x axis
-//		if (path[0].second > path[1].second){ // go west
-//			return abs(_robot->getYaw() - 180) < 5;
-//		}else{ // go east
-//			return abs(_robot->getYaw()) < 5;
-//		}
-//	} else { //moving on y axis
-//		if (path[0].first > path[1].first){ // go south
-//			return abs(_robot->getYaw() - 270) < 5;
-//		}else{ // go north
-//			return abs(_robot->getYaw() - 90) < 5;
-//		}
-//	}
-
-	// Remove point to move to next position
 }
 void TurnToNextPoint::action(){
 	// turn robot
-	_robot->setSpeed(0,0.2);
+	if (!stopCond()){ // don't move if pointing to right angle
+		_robot->setSpeed(0,0.2);
+	}
 }
 
 TurnToNextPoint::~TurnToNextPoint() {

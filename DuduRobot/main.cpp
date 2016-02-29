@@ -26,35 +26,57 @@ int main(){
 	Robot robot("localhost",6665, confXPos, confYPos, yaw);
 	robot.read();
 	Position audoRobotPos(robot.getXPos(), robot.getYPos());
-	Position robotPos = map.normalizeRobotPos(audoRobotPos);
-	float xPos = robotPos.first;
-	float yPos = robotPos.second;
-	Position p(xPos, yPos);
-	STC* stc = new STC(map, p);
+
+	STC* stc = new STC(map, audoRobotPos);
 
 
 	cout<<"Writing output file"<<endl;
-	map.drowMapWithCourse("out.png", Position(xPos,yPos));
+	map.drowMapWithCourse("out.png", audoRobotPos);
 
 
-	/*vector<Position> path = stc->generatePath();
+	vector<Position> path = stc->generatePath();
 
+	////////////////////////////////////////////////////////////////////////////////////////
+	robot.read();
+	float x = robot.getXPos();
+	float y = robot.getYPos();
+	float _yaw = robot.getYaw();
+
+	if(abs(audoRobotPos.second - path[0].second) < 10 * DISTANCE_TOLERANCE &&
+	   abs(audoRobotPos.first - path[0].first) < 10 * DISTANCE_TOLERANCE){
+
+		path.erase(path.begin());
+	}
+	float angle = atan2(path[0].second - y, path[0].first - x);
+	cout<<x<<" "<<y<<" "<<_yaw<<" "<<angle<<endl;
+	////////////////////////////////////////////////////////////////////////////////////////
 
 	// create behavior graph
-	MoveToNextPoint nextPoint(&robot, path, map);
-	TurnToNextPoint turn(&robot, path, map);
-	StopObsAhead stop(&robot);
+	MoveToNextPoint* nextPoint = new MoveToNextPoint(&robot, path, map);
+	TurnToNextPoint* turn = new TurnToNextPoint(&robot, path, map);
+	StopObsAhead* stop = new StopObsAhead(&robot);
 
-	nextPoint.addNext(&turn);
-	nextPoint.addNext(&stop);
 
-	turn.addNext(&nextPoint);
+	nextPoint->addNext(turn);
+	nextPoint->addNext(stop);
 
-	stop.addNext(&nextPoint);
+	turn->addNext(nextPoint);
 
-	Manager manager(&robot, &turn);
+	stop->addNext(nextPoint);
+
+//	Manager manager(&robot, turn);
+	Manager manager(&robot, nextPoint);
 
 	manager.run();
 /**/
+
+
 	cout<<"bye from Dudu robot";
+
+	delete conf;
+	delete stc;
+	delete nextPoint;
+	delete turn;
+	delete stop;
+
 }

@@ -18,17 +18,26 @@ bool MoveToNextPoint::startCond(){
 
 }
 bool MoveToNextPoint::stopCond(){
-	Position audoRobotPos(_robot->getXPos(), _robot->getYPos());
-	Position robotPos = _map.normalizeRobotPos(audoRobotPos);
+//	Position audoRobotPos(_robot->getXPos(), _robot->getYPos());
+	Position audoRobotPos(_robot->getYPos(), _robot->getXPos());
 
-	return _robot->hasObsticalAhead() ||
-			(abs(robotPos.second - path[0].second) < 10 * DISTANCE_TOLERANCE &&
-						abs(robotPos.first - path[0].first) < 10 * DISTANCE_TOLERANCE);
+	//	Position robotPos = _map.normalizeRobotPos(audoRobotPos);
+
+	if ( _robot->hasObsticalAhead() ||
+			(abs(audoRobotPos.first - path[0].second) < DISTANCE_TOLERANCE &&
+						abs(audoRobotPos.second - path[0].first) < DISTANCE_TOLERANCE)){
+		path.erase(path.begin());
+		_robot->setSpeed(0,0);
+		return true;
+	}
+
+	return false;
 }
 void MoveToNextPoint::action(){
-	Position audoRobotPos(_robot->getXPos(), _robot->getYPos());
-	Position robotPos = _map.normalizeRobotPos(audoRobotPos);
-	cout<< "moving form ["<<robotPos.first<<","<<robotPos.second<<"] to ["<<path[0].first<<","<<path[0].second<<"]"<<endl;
+//	Position audoRobotPos(_robot->getXPos(), _robot->getYPos());
+	Position audoRobotPos(_robot->getYPos(), _robot->getXPos());
+//	Position robotPos = _map.normalizeRobotPos(audoRobotPos);
+	cout<< "moving form ["<<audoRobotPos.first<<","<<audoRobotPos.second<<"] to ["<<path[0].second<<","<<path[0].first<<"]"<<endl;
 	_robot->setSpeed(0.5,0);
 }
 

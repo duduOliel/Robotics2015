@@ -36,7 +36,13 @@ void Robot::setSpeed(double linearSpeed, double angularSpeed) {
 }
 
 bool Robot::hasObsticalAhead(){
-	return (*lp)[ 2] < MIN_DISTANCE_FROM_OBSTICLE;
+	for (int i = 0 ; i < 50 ; i++){
+		if ((*lp)[(SAMPLES / 2) + i] < MIN_DISTANCE_FROM_OBSTICLE || (*lp)[(SAMPLES / 2) - i] < MIN_DISTANCE_FROM_OBSTICLE){
+			cout<<"obstical at distance: " << (*lp)[(SAMPLES / 2) + i]<<" or " << (*lp)[(SAMPLES / 2) - i]<<endl;
+			return true;
+		}
+	}
+	return false;
 }
 
 Robot::~Robot() {

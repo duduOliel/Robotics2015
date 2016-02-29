@@ -1,5 +1,5 @@
 robotSize=30
-robotInitialXpos=410 
-robotInitialYpos=305
-robotInitialYaw=20
+robotInitialXpos=390 
+robotInitialYpos=300
+robotInitialYaw=3.14159
 mapResolution=2.5

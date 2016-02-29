@@ -7,6 +7,8 @@
 
 #include "Manager.h"
 
+#include "Robot.h"
+
 Manager::Manager(Robot *robot, Behavior *startBehavior) : _robot(robot), _currBehavior(startBehavior){
 
 }
