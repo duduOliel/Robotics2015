@@ -7,16 +7,12 @@
 
 #include "Robot.h"
 
-Robot::Robot(string ip, int port) {
+Robot::Robot(string ip, int port, float xPos, float yPos, float yaw) {
 	pc = new PlayerClient(ip, port);
 	lp = new LaserProxy(pc);
 	pp = new Position2dProxy(pc);
 
-	pc->Read();
-	double x = pp->GetXPos(), y = pp->GetYPos();
-
-	pp->SetOdometry(2.175, -2.875, M_PI / 4);
-	double x1 = pp->GetXPos(), y1 = pp->GetYPos();
+	pp->SetOdometry(xPos, yPos, yaw);
 }
 
 double Robot::getXPos() {

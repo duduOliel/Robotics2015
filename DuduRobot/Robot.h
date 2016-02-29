@@ -23,7 +23,7 @@ private:
 	LaserProxy *lp;
 
 public:
-	Robot(string ip, int port);
+	Robot(string ip, int port, float xPos, float yPos, float yaw);
 	double getXPos();
 	double getYPos();
 	double getYaw();

@@ -14,44 +14,30 @@ using namespace std;
 using namespace PlayerCc;
 
 int main(){
-//	PlayerClient pc("localhost",6665);
-//	Position2dProxy pp(&pc,0);
-//
-//	pc.Read();
-//	int initialYPos = pp.GetYPos();
-//
-////	pp.SetSpeed(0, 0.005);
-////	for (int i = 0 ; i < 100 ; i++)
-////		pc.Read();
-//
-//	pp.SetSpeed(1,  0);
-//	do{
-//		pc.Read();
-//		cout << "yPox: " << pp.GetYPos()<<endl;
-//	}while (pp.GetYPos() > initialYPos -1);
-//	pp.SetSpeed(0,0);
-//	cout << pp.GetYaw();
-	Config conf("config.file");
-	float mapResolution = strtof(conf[Config::MAP_RESOLUTION].c_str(), 0); // 0.025;
-	float robotSize = conf.getFloat(Config::ROBOT_SIZE); //strtof(conf[Config::ROBOT_SIZE].c_str(), 0); //0.3;
+
+	Config* conf = new Config("config.file");
+	float mapResolution = strtof((*conf)[Config::MAP_RESOLUTION].c_str(), 0); // 0.025;
+	float robotSize = conf->getFloat(Config::ROBOT_SIZE); //strtof(conf[Config::ROBOT_SIZE].c_str(), 0); //0.3;
+	float confXPos = conf->getFloat(Config::ROBOT_INIITAL_X_POS);
+	float confYPos = conf->getFloat(Config::ROBOT_INIITAL_Y_POS);
+	float yaw = conf->getFloat(Config::ROBOT_INIITAL_YAW);
 
 	Map map("roboticLabMap.png",mapResolution, robotSize);
-	Robot robot("localhost",6665);
-
-//	float xPos = conf.getFloat(Config::ROBOT_INIITAL_X_POS);
-//	float yPos = conf.getFloat(Config::ROBOT_INIITAL_Y_POS);
+	Robot robot("localhost",6665, confXPos, confYPos, yaw);
+	robot.read();
 	Position audoRobotPos(robot.getXPos(), robot.getYPos());
 	Position robotPos = map.normalizeRobotPos(audoRobotPos);
 	float xPos = robotPos.first;
 	float yPos = robotPos.second;
-	STC stc(map, Position(xPos, yPos));
+	Position p(xPos, yPos);
+	STC* stc = new STC(map, p);
 
 
 	cout<<"Writing output file"<<endl;
 	map.drowMapWithCourse("out.png", Position(xPos,yPos));
 
 
-	vector<Position> path = stc.generatePath();
+	/*vector<Position> path = stc->generatePath();
 
 
 	// create behavior graph
@@ -69,6 +55,6 @@ int main(){
 	Manager manager(&robot, &turn);
 
 	manager.run();
-
+/**/
 	cout<<"bye from Dudu robot";
 }
