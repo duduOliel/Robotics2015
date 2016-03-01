@@ -23,15 +23,15 @@ int main(){
 	float yaw = conf->getFloat(Config::ROBOT_INIITAL_YAW);
 
 	Map map("roboticLabMap.png",mapResolution, robotSize);
-	Robot robot("localhost",6665, confXPos, confYPos, yaw);
+	Robot robot("localhost",6665, confXPos, confYPos, yaw, map.getMap().getHeight() * mapResolution);
 	robot.read();
-	Position audoRobotPos(robot.getXPos(), robot.getYPos());
+	Position robotPos = robot.getRobotPosition();
 
-	STC* stc = new STC(map, audoRobotPos);
+	STC* stc = new STC(map, robotPos);
 
 
 	cout<<"Writing output file"<<endl;
-	map.drowMapWithCourse("out.png", audoRobotPos);
+	map.drowMapWithCourse("out.png", robotPos);
 
 
 	vector<Position> path = stc->generatePath();
@@ -42,18 +42,18 @@ int main(){
 	float y = robot.getYPos();
 	float _yaw = robot.getYaw();
 
-	if(abs(audoRobotPos.second - path[0].second) < 10 * DISTANCE_TOLERANCE &&
-	   abs(audoRobotPos.first - path[0].first) < 10 * DISTANCE_TOLERANCE){
+	if(abs(robotPos.second - path[0].second) < DISTANCE_TOLERANCE &&
+	   abs(robotPos.first - path[0].first) < DISTANCE_TOLERANCE){
 
 		path.erase(path.begin());
 	}
 	float angle = atan2(path[0].second - y, path[0].first - x);
-	cout<<x<<" "<<y<<" "<<_yaw<<" "<<angle<<endl;
+	cout<<robotPos.first<<" "<<robotPos.second<<" "<<_yaw<<" "<<angle<<endl;
 	////////////////////////////////////////////////////////////////////////////////////////
 
 	// create behavior graph
-	MoveToNextPoint* nextPoint = new MoveToNextPoint(&robot, path, map);
-	TurnToNextPoint* turn = new TurnToNextPoint(&robot, path, map);
+	MoveToNextPoint* nextPoint = new MoveToNextPoint(&robot, &path, map);
+	TurnToNextPoint* turn = new TurnToNextPoint(&robot, &path, map);
 	StopObsAhead* stop = new StopObsAhead(&robot);
 
 
@@ -64,8 +64,8 @@ int main(){
 
 	stop->addNext(nextPoint);
 
-//	Manager manager(&robot, turn);
-	Manager manager(&robot, nextPoint);
+	Manager manager(&robot, turn);
+//	Manager manager(&robot, nextPoint);
 
 	manager.run();
 /**/

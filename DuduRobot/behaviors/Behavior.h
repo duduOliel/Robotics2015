@@ -12,7 +12,7 @@
 #include <vector>
 using namespace std;
 
-#define DISTANCE_TOLERANCE 30
+#define DISTANCE_TOLERANCE 10
 
 class Behavior {
 private:

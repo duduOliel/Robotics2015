@@ -20,10 +20,10 @@ typedef pair<double, double> Position;
 class MoveToNextPoint: public MapAwareBehavior {
 
 private:
-	vector<Position> path;
+	vector<Position>* path;
 
 public:
-	MoveToNextPoint(Robot *robot, vector<Position>& path, Map& map);
+	MoveToNextPoint(Robot *robot, vector<Position>* path, Map& map);
 	virtual bool startCond();
 	virtual bool stopCond();
 	virtual void action();

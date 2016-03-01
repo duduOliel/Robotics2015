@@ -18,11 +18,11 @@ typedef pair<double, double> Position;
 
 class TurnToNextPoint: public MapAwareBehavior {
 private:
-	vector<Position> path;
+	vector<Position>* path;
 	double constrainAngle(double x);
 
 public:
-	TurnToNextPoint(Robot* robot, vector<Position> & path, Map& map);
+	TurnToNextPoint(Robot* robot, vector<Position>* path, Map& map);
 
 	virtual bool startCond();
 	virtual bool stopCond();

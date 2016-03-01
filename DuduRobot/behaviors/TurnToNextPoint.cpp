@@ -7,7 +7,7 @@
 
 #include "TurnToNextPoint.h"
 
-TurnToNextPoint::TurnToNextPoint(Robot* robot, vector<Position> & path, Map& map):MapAwareBehavior(robot, map), path(path) {
+TurnToNextPoint::TurnToNextPoint(Robot* robot, vector<Position>* path, Map& map):MapAwareBehavior(robot, map), path(path) {
 	// TODO Auto-generated constructor stub
 
 }
@@ -22,24 +22,25 @@ double TurnToNextPoint::constrainAngle(double x){
 bool TurnToNextPoint::startCond(){
 	// start if robot is not on the same place as next point
 //	cout<<"TurnToNextPoint start condition robot pos: "<<_robot->getXPos() - path[0].first<<endl;
-	return !(abs(_robot->getXPos() - path[0].first) < DISTANCE_TOLERANCE &&
-			abs(_robot->getYPos() - path[0].second) <  DISTANCE_TOLERANCE);
+	return true;
+	Position robotPos = _robot->getRobotPosition();
+	return !(abs(robotPos.first - (*path)[0].first) < DISTANCE_TOLERANCE &&
+			abs(robotPos.second - (*path)[0].second) <  DISTANCE_TOLERANCE);
 }
 
 bool TurnToNextPoint::stopCond(){
 // Robot points next position
 
 	double robotYaw = _robot->getYaw();
-//	cout << "Robot Yaw: " << robotYaw;
+	cout << "Robot Yaw: " << robotYaw;
 	robotYaw = constrainAngle(robotYaw);
-//	cout << " Constrained robot Yaw: " << robotYaw;
+	cout << " Constrained robot Yaw: " << robotYaw;
 
 
-	Position audoPos(_robot->getXPos(), _robot->getYPos());
-	//Position robotPos = _map.normalizeRobotPos(audoPos);
+	Position audoPos = _robot->getRobotPosition();
 //	double angleToNextPoint = constrainAngle(atan2(path[1].second - path[0].second, path[1].first - path[0].second));
-		double angleToNextPoint = constrainAngle(atan2(path[0].first - audoPos.first, path[0].second - audoPos.second));
-//	cout << "Points ["<<path[0].first <<","<<path[0].second<<"] ["<<audoPos.first <<","<<audoPos.second<<"] angle"<<angleToNextPoint<<endl;
+		double angleToNextPoint = constrainAngle(atan2((*path)[0].first - audoPos.first, (*path)[0].second - audoPos.second));
+	cout << "Points ["<<(*path)[0].first <<","<<(*path)[0].second<<"] ["<<audoPos.first <<","<<audoPos.second<<"] angle"<<angleToNextPoint<<endl;
 
 
 	if (abs(robotYaw - angleToNextPoint) < 0.0523599){ // 3 degrees

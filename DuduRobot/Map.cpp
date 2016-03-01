@@ -28,6 +28,10 @@ Map::Map(const char* mapFile, float mapResolution, float robotSize):mapFile(mapF
 BoolGrid& Map::getCourseGrid(){
 	return grid;
 }
+
+BoolGrid& Map::getMap(){
+	return map;
+}
 void Map::loadImage(){
 	cout << "Loading map file: " << mapFile << endl;
 	unsigned int mapWidth = 0;
@@ -112,12 +116,12 @@ void Map::createGrid(){
 
 Position Map::pointToCourseGridCell(Position p){
 	float factor = mapResolution * robotSizeInCells * 2;
-	return Position(round(p.first/ factor), round(p.second /factor));
+	return Position(round(p.first / factor), round(p.second / factor));
 }
 
 Position Map::pointToFineGridCell(Position p){
 	float factor = mapResolution * robotSizeInCells;
-	return Position(round(p.first/ factor), round(p.second /factor));
+	return Position(round(p.first / factor), round(p.second/factor));
 }
 
 Position Map::courseGridCellToMapPoint(Position p){
@@ -142,7 +146,7 @@ Position Map::courseGridCellToMapPoint(Position p){
 
 Position Map::courseGridCellToWorldPosition(Position p){
 	float factor = mapResolution * robotSizeInCells;
-	return Position(p.first* factor, p.second *factor);
+	return Position(p.first * factor, p.second * factor);
 }
 
 Position Map::fineGridToWorldPosition(Position p){

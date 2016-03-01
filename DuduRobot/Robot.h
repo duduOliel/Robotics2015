@@ -16,17 +16,21 @@ using namespace std;
 #define SAMPLES  666
 #define MIN_DISTANCE_FROM_OBSTICLE  0.20
 
+typedef pair<double, double> Position;
+
 class Robot {
 private:
 	PlayerClient *pc;
 	Position2dProxy *pp;
 	LaserProxy *lp;
+	float worldHeight;
 
 public:
-	Robot(string ip, int port, float xPos, float yPos, float yaw);
+	Robot(string ip, int port, float xPos, float yPos, float yaw, float worldHeight);
 	double getXPos();
 	double getYPos();
 	double getYaw();
+	Position getRobotPosition();
 	void read();
 	void setSpeed(double linearSpeed, double angularSpeed);
 	bool hasObsticalAhead();

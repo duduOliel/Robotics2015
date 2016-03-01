@@ -7,12 +7,16 @@
 
 #include "Robot.h"
 
-Robot::Robot(string ip, int port, float xPos, float yPos, float yaw) {
+Robot::Robot(string ip, int port, float xPos, float yPos, float yaw, float worldHeight):worldHeight(worldHeight) {
 	pc = new PlayerClient(ip, port);
 	lp = new LaserProxy(pc);
 	pp = new Position2dProxy(pc);
 
-	pp->SetOdometry(xPos, yPos, yaw);
+	// set audometry in meter
+	double _xpos = xPos / 100.0;
+	double _ypos = (worldHeight - yPos) / 100.0;
+//	double _ypos = yPos / 100.0;
+	pp->SetOdometry(_xpos, _ypos, yaw);
 }
 
 double Robot::getXPos() {
@@ -25,6 +29,11 @@ double Robot::getYPos() {
 
 double Robot::getYaw() {
 	return pp->GetYaw();
+}
+
+Position Robot::getRobotPosition(){
+	return Position(worldHeight - (getYPos() * 100), getXPos()*100);
+//	return Position(getYPos() * 100, getXPos()*100);
 }
 
 void Robot::read() {

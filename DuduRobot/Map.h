@@ -36,6 +36,7 @@ private:
 public:
 	Map(const char* mapFile, float mapResolution, float robotSize);
 	BoolGrid& getCourseGrid();
+	BoolGrid& getMap();
 	Position pointToCourseGridCell(Position p);
 	Position pointToFineGridCell(Position p);
 	Position courseGridCellToMapPoint(Position p);
