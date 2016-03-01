@@ -20,7 +20,8 @@ class TurnToNextPoint: public MapAwareBehavior {
 private:
 	vector<Position>* path;
 	double constrainAngle(double x);
-
+	float calcNextAngle();
+	float calcDirection(float robotYaw, float direction);
 public:
 	TurnToNextPoint(Robot* robot, vector<Position>* path, Map& map);
 
