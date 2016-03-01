@@ -51,6 +51,7 @@ float TurnToNextPoint::calcDirection(float robotYaw, float direction){
 		}
 	}
 	return lastDir;
+	//
 //	if (robotYaw > M_PI && direction > (2 * M_PI) - 0.002){
 //		direction = 6.24828; // set just below zero
 //	}
